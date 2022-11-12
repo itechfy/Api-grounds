@@ -1,6 +1,7 @@
 var express = require("express");
 const { grounds } = require("./handlers/grounds");
 const { owner } = require("./handlers/ground-owner");
+const { owners } = require("./handlers/all-owners");
 var app = express();
 const PORT = process.env.PORT || 5050;
 
@@ -20,6 +21,8 @@ app.get("/", (req, res) => {
 app.get("/grounds", grounds);
 
 app.get("/owner/:id", owner);
+
+app.get("/owner", owners);
 
 app.listen(PORT, function () {
   console.log(`Demo project at: ${PORT}!`);
