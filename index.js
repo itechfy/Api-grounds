@@ -19,7 +19,7 @@ app.get("/", (req, res) => {
 });
 app.get("/grounds", grounds);
 
-app.get("/coach/:id", owner);
+app.get("/owner/:id", owner);
 
 app.listen(PORT, function () {
   console.log(`Demo project at: ${PORT}!`);
