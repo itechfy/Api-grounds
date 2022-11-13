@@ -35,8 +35,8 @@ exports.groundAndOwner = async (req, res) => {
           id: doc.id,
           ...doc.data(),
         }));
-        console.log(data2[1]["owners"]);
-        console.log(groundsArr);
+       // console.log(data2[1]["owners"]);
+       // console.log(groundsArr);
         const owners = data2[1]["owners"];
         ////////////////////Merging data of Grounds and owners//////////////////////////
         for (let index = 0; index < groundsArr.length; index++) {
