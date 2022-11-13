@@ -2,6 +2,8 @@ var express = require("express");
 const { grounds } = require("./handlers/grounds");
 const { owner } = require("./handlers/ground-owner");
 const { owners } = require("./handlers/all-owners");
+const { groundAndOwner } = require("./handlers/ground-and-owner");
+
 var app = express();
 const PORT = process.env.PORT || 5050;
 
@@ -16,13 +18,15 @@ app.use((req, res, next) => {
 });
 
 app.get("/", (req, res) => {
-  res.send("This is my demo project");
+  res.send("You are on Home Page");
 });
 app.get("/grounds", grounds);
 
 app.get("/owner/:id", owner);
 
 app.get("/owner", owners);
+
+app.get("/ground-and-owner", groundAndOwner);
 
 app.listen(PORT, function () {
   console.log(`Demo project at: ${PORT}!`);
