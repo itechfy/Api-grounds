@@ -11,7 +11,7 @@ exports.setVerified = async (req, res) => {
     //   .then((response) => console.log(response.data()));
     // const newRef = db.doc(`grounds/${type}`).where("id", "==", type).get();
     // const newRef = await db.doc(`grounds/${type}`).get();
-    db.doc(`users/${type}`).set(Owners);
+   // db.doc(`users/${type}`).set(Owners);
   } catch (error) {
     return res
       .status(500)
