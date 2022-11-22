@@ -3,6 +3,7 @@ const { grounds } = require("./handlers/grounds");
 const { owner } = require("./handlers/ground-owner");
 const { owners } = require("./handlers/all-owners");
 const { groundAndOwner } = require("./handlers/ground-and-owner");
+const { setVerified } = require("./handlers/verifyGround");
 
 var app = express();
 const PORT = process.env.PORT || 5050;
@@ -28,6 +29,8 @@ app.get("/owner", owners);
 
 app.get("/ground-and-owner", groundAndOwner);
 
+// example.com/verify/ground ?id=1&type=cricket&city=islamabad            //id of ground to verify
+app.patch("/verify/ground*", setVerified);
 
 app.listen(PORT, function () {
   console.log(`Demo project at: ${PORT}!`);
