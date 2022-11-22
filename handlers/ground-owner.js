@@ -1,19 +1,20 @@
+const { response } = require("express");
 const { db } = require("../utils/admin");
 
 exports.owner = async (req, res) => {
   var ownerID = req.params.id.toString();
-  var ownersArr = [];
-  const ownerRef = db.collection("users");
+  var ownersArr;
 
   try {
-    ownerRef.get().then((snapshot) => {
-      const data = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-      ownersArr = data[1]["owners"];
-      ownersArr.forEach((o) => {
-        if (o.id == ownerID) {
-          return res.status(201).json(o);
+    db.doc("users/ground-owner")
+      .get()
+      .then(function (response) {
+        ownersArr = response.data();
+        for (key in ownersArr) {
+          if (key === ownerID) {
+            return res.status(201).json(ownersArr[ownerID]);
+          }
         }
       });
-    });
   } catch (error) {}
 };

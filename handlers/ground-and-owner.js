@@ -1,10 +1,10 @@
 const { db } = require("../utils/admin");
+const { grounds } = require("./grounds");
 
 exports.groundAndOwner = async (req, res) => {
-  const groundsArr = [];
-  const arr1 = [];
+  var groundsList = {};
   const groundsRef = db.collection("grounds");
-  const ownerRef = db.collection("users");
+
   try {
     groundsRef.get().then((snapshot) => {
       const data = snapshot.docs.map((doc) => ({
@@ -12,54 +12,47 @@ exports.groundAndOwner = async (req, res) => {
         ...doc.data(),
       }));
       /////////////////////This will get every ground of every location////////////////////////////////////////
-      const arr = data.map(
-        (
-          ground //return cities names
-        ) =>
-          Object.keys(ground)
-            .filter((value) => value !== "id")
-            .map((cityName) => ground[cityName])
-      );
-      for (let index = 0; index < arr.length; index++) {
-        for (let y = 0; y < arr[index].length; y++) {
-          for (let z = 0; z < arr[index][y].length; z++) {
-            groundsArr.push(arr[index][y][z]);
-          }
+      const arr = data
+        .map(
+          (
+            ground //return cities names
+          ) =>
+            Object.keys(ground)
+              .filter((value) => value !== "id")
+              .map((cityName) => {
+                let keys = Object.keys(ground[cityName]);
+                keys.map((key) => {
+                  ground[cityName][key]["type"] = ground.id;
+                  ground[cityName][key]["city"] = cityName;
+                });
+                return ground[cityName];
+              })
+        )
+        .flat(); //flat merges nested arrays into single array
+      //  console.log(Object.keys(arr[0])[0]);
+      for (let i = 0; i < arr.length; i++) {
+        for (key in arr[i]) {
+          Object.assign(groundsList, { [key]: arr[i][key] });
         }
       }
 
-      ////////////////////////ENDS HERE/////////////////////////////
-
-      ownerRef.get().then((snapshot2) => {
-        const data2 = snapshot2.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-       // console.log(data2[1]["owners"]);
-       // console.log(groundsArr);
-        const owners = data2[1]["owners"];
-        ////////////////////Merging data of Grounds and owners//////////////////////////
-        for (let index = 0; index < groundsArr.length; index++) {
-          for (let index2 = 0; index2 < owners.length; index2++) {
-            if (
-              groundsArr[index]["ownerId"].toString() ==
-              owners[index2]["id"].toString()
-            ) {
-              arr1.push({
-                ...groundsArr[index],
-                owner: {
-                  ...owners[index2],
-                },
-              });
+      db.doc("users/ground-owner")
+        .get()
+        .then(function (response) {
+          var tempObj = {};
+          var owners = response.data();
+          for (key in groundsList) {
+            for (ownerID in owners) {
+              if (groundsList[key].ownerId == ownerID) {
+                Object.assign(tempObj, {
+                  [key]: { ...groundsList[key], owner: { ...owners[ownerID] } },
+                });
+              }
             }
           }
-        }
-        //  console.log(arr1);
-        return res.status(201).json(arr1);
-      });
-      //  return res.status(201).json(data);
 
-      //  console.log(owners);
+          return res.status(201).json(tempObj);
+        });
     });
   } catch (error) {
     return res
