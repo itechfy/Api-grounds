@@ -8,11 +8,13 @@ exports.setVerified = async (req, res) => {
     const obj = {
       [paramsString]: true,
     };
-    db.doc(`grounds/${type}`).update(obj)
-      .then(() => {
+    db.doc(`grounds/${type}`).update(obj).then(() => {
         console.log("Update success");
+        res.status(201).json({
+          verified: true,
+        });
       })
-      .catch((error) => console.error("Error: ", error));;
+      .catch((error) => console.error("Error: ", error));
    
   } catch (error) {
     return res
