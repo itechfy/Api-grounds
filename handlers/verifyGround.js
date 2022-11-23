@@ -8,8 +8,8 @@ exports.setVerified = async (req, res) => {
     const obj = {
       [paramsString]: true,
     };
-    db.doc(`grounds/${type}`).update(obj);
-    return true;
+    return db.doc(`grounds/${type}`).update(obj);
+   
   } catch (error) {
     return res
       .status(500)
